@@ -15,13 +15,8 @@ from django.views.decorators.csrf import csrf_exempt
 __author__ = '7326'
 
 from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from django.contrib import auth
-from django import http
-from django.shortcuts import render
 from rest_framework.renderers import JSONRenderer
-from .serializers import UserLoginSerializer
+from .serializers import UserRegisterSerializer
 import json
 from .models import User
 
@@ -37,13 +32,13 @@ class JSONResponse(HttpResponse):
         super(JSONResponse, self).__init__(content, **kwargs)
 
 
-class UserLoginAPIview(APIView):
+class UserRegistAPIview(APIView):
     @csrf_exempt
     def post(self,request):
         '''
-        登陆json api接口
+        注册json api接口
         '''
-        serializer = UserLoginSerializer(data=request.data)
+        serializer = UserRegisterSerializer(data=request.data)
         if serializer.is_valid():
             data = serializer.data
             try:

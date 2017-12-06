@@ -16,7 +16,7 @@ from rest_framework import serializers
 
 from .models import User
 
-class UserLoginSerializer(serializers.Serializer):
+class UserRegisterSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=20)
     password = serializers.CharField(max_length=20)
     phone = serializers.CharField(max_length=20)
