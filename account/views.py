@@ -98,16 +98,21 @@ class UserLogoutAPI(APIView):
         auth.logout(request)
         return JSONResponse({'code':200,'msg':'ok'})
 
-# 获取所有用户api
+# 查询用户
 class UserListAPI(APIView):
     @csrf_exempt
     def get(self,request):
-        user_list = User.objects.all()
-        num = User.count()
-        print(user_list)
-        re_data = {
-            'total':num,
-            'users':'',
+        name = request.GET.get('name').strip()
+        if name != '' and name != None:
+            user_list = User.objects.filter(name=name)
+        else:
+            user_list = User.objects.all()
+        user_list_l = []
+        for u in user_list:
+            user_list_l.append({'name':u.name,'username':u.username,'studentid':u.studentid,'phone':u.phone,'major':u.major,'grade':u.grade,'sex':u.sex})
 
+        re_data = {
+            'total':len(user_list_l),
+            'users':user_list_l,
         }
         return JSONResponse(re_data,status=200)
