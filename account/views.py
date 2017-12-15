@@ -9,6 +9,7 @@
    Change Activity: 2017/12/6
 -------------------------------------------------
 """
+import json
 
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -17,7 +18,7 @@ from django.contrib import auth
 __author__ = '7326'
 from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer
-from .serializers import UserLoginSerializer,UserRedisterSerializer
+from .serializers import UserLoginSerializer,UserRedisterSerializer,UserSerializer
 from .models import User
 
 
@@ -94,6 +95,7 @@ class UserLoginAPI(APIView):
 
 
 class UserLogoutAPI(APIView):
+    @csrf_exempt
     def get(self, request):
         auth.logout(request)
         return JSONResponse({'code':200,'msg':'ok'})
@@ -102,17 +104,27 @@ class UserLogoutAPI(APIView):
 class UserListAPI(APIView):
     @csrf_exempt
     def get(self,request):
-        name = request.GET.get('name').strip()
+        name = request.GET.get('name')
         if name != '' and name != None:
             user_list = User.objects.filter(name=name)
         else:
             user_list = User.objects.all()
-        user_list_l = []
-        for u in user_list:
-            user_list_l.append({'name':u.name,'username':u.username,'studentid':u.studentid,'phone':u.phone,'major':u.major,'grade':u.grade,'sex':u.sex})
-
+        user_list = UserSerializer(user_list,many=True)
         re_data = {
-            'total':len(user_list_l),
-            'users':user_list_l,
+            'total':len(user_list.data),
+            'users':user_list.data,
         }
         return JSONResponse(re_data,status=200)
+
+
+class UserRemoveAPI(APIView):
+    @csrf_exempt
+    def get(self,request):
+        id = request.GET.get('id')
+
+
+        pass
+
+
+
+

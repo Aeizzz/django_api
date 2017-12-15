@@ -13,6 +13,7 @@ __author__ = '7326'
 
 
 from rest_framework import serializers
+from .models import User
 
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=20)
@@ -28,3 +29,10 @@ class UserRedisterSerializer(serializers.Serializer):
     major = serializers.CharField(max_length=20)
     grade = serializers.CharField(max_length=20)
     sex = serializers.CharField(max_length=20)
+
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('username','studentid','name','phone','major','grade','sex')
