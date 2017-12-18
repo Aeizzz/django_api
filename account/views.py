@@ -13,9 +13,7 @@ import json
 
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.response import Response
 from django.contrib import auth
-__author__ = '7326'
 from rest_framework.views import APIView
 from rest_framework.renderers import JSONRenderer
 from .serializers import UserLoginSerializer,UserRedisterSerializer,UserSerializer
