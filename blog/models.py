@@ -22,8 +22,8 @@ class Article(models.Model):
     # 摘要
     excerpt = models.CharField(max_length=200, blank=True)
     #
-    category = models.ForeignKey(Category)
+    category = models.ForeignKey(Category,on_delete=models.CASCADE)
     tags = models.ManyToManyField(Tag, blank=True)
 
     #用户
-    author = models.ForeignKey(User)
+    author = models.ForeignKey(User,on_delete=models.CASCADE)

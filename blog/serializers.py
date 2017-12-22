@@ -12,9 +12,15 @@
 __author__ = '7326'
 
 from rest_framework import serializers
-from .models import Article
+from .models import Article,Tag,Category
 
 class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
         fields = ('title', 'body', 'created_time', 'modified_time', 'excerpt', 'category', 'tags','author')
+
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = "__all__"
