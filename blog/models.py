@@ -2,12 +2,12 @@ from django.db import models
 from account.models import User
 # Create your models here.
 
-class Category(models.Model):
+class ArticleCategorys(models.Model):
     name = models.CharField(max_length=64)
 
 
 
-class Tag(models.Model):
+class ArticleTags(models.Model):
     name = models.CharField(max_length=64)
 
 
