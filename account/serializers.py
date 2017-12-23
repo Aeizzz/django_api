@@ -19,20 +19,13 @@ class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=20)
     password = serializers.CharField(max_length=20)
 
-
-class UserRedisterSerializer(serializers.Serializer):
-    studentid = serializers.CharField(max_length=20)
+class UserRegisterSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=20)
     name = serializers.CharField(max_length=20)
     password = serializers.CharField(max_length=20)
-    phone = serializers.CharField(max_length=20)
-    major = serializers.CharField(max_length=20)
-    grade = serializers.CharField(max_length=20)
-    sex = serializers.CharField(max_length=20)
-
 
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ('username','studentid','name','phone','major','grade','sex')
+        fields = ('username','name')

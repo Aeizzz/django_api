@@ -3,10 +3,14 @@ from rest_framework.views import APIView
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.renderers import JSONRenderer
-from .models import Article,ArticleTags,ArticleCategorys
-from .serializers import ArticleSerializer,TagSerializer,CreateArticleSerializer,EditArticleSerializer
-from utils.api.api import APIView,CSRFExemptAPIView,validate_serializer
+from .models import Article,Tags,Categorys
+from .serializers import ArticleSerializer,TagSerializer,CreateArticleSerializer,EditArticleSerializer,CategorySerializer,ArticleAdminSerializer
+from utils.api.api import APIView,validate_serializer
+from account.models import User
+
+
 class JSONResponse(HttpResponse):
+
     """docstring for JSONRenderer"""
     '''
     将HttpResponse对象相应的内容转化为json
@@ -20,24 +24,24 @@ class JSONResponse(HttpResponse):
 
 class ArticleAPI(APIView):
     @validate_serializer(CreateArticleSerializer)
-    @csrf_exempt
     def post(self,request):
         '''
-
+        增加文章
         :param request:
         :return:
         '''
         data = request.data
+        data["author"] = request.user
+        data["category"] = Categorys.objects.get(name=data['category'])
         tags = data.pop("tags")
         article = Article.objects.create(**data)
-
         for item in tags:
             try:
-                tag = ArticleTags.objects.get(name=item)
-            except ArticleTags.DoesNotExist:
-                tag = ArticleTags.objects.create(name=item)
-            Article.tags.add(tag)
-        return self.success(ArticleSerializer(article).data)
+                tag = Tags.objects.get(name=item)
+            except Tags.DoesNotExist:
+                tag = Tags.objects.create(name=item)
+            article.tags.add(tag)
+        return self.success(ArticleAdminSerializer(article,many=True).data)
 
     @csrf_exempt
     def get(self,request):
@@ -66,20 +70,55 @@ class ArticleAPI(APIView):
         if category_text:
             articles = articles.filter(category__name=category_text)
 
-        # 分页查询
-        data = self.paginate_data(request,articles,ArticleSerializer)
         # 返回数据
-        return self.success(data)
+        return self.success(self.paginate_data(request,articles,ArticleSerializer))
 
-    @csrf_exempt
+    @validate_serializer(EditArticleSerializer)
     def put(self,request):
-        pass
+        '''
+        更新文章
+        :param request:
+        :return:
+        '''
+        data = request.data
+        article_id = data.pop('id')
+        try:
+            article = Article.objects.get(id=article_id)
+        except Article.DoesNotExist:
+            return self.error("article does not exist")
 
-    @csrf_exempt
+        tags = data.pop('tags')
+
+        for k,v in data.items():
+            setattr(article,k,v)
+        article.save()
+
+        article.tags.remove(*article.tags.all())
+
+        for tag in tags:
+            try:
+                tag = Tags.objects.get(name=tag)
+            except Tags.DoesNotExist:
+                Tags.objects.create(name=tag)
+            article.tags.add(tag)
+        return self.success()
+
     def delete(self,request):
-        pass
+        '''
+        删除文章
+        :param request:
+        :return:
+        '''
+        id = request.GET.get('id')
+        if not id:
+            return self.error('Invalid parameter, id is requred')
+        try:
+            article = Article.objects.get(id=id)
+        except Article.DoesNotExist:
+            return self.error("article does not exists")
 
-
+        article.delete()
+        return self.success()
 class TagAPI(APIView):
     @csrf_exempt
     def get(self, request):
@@ -88,5 +127,15 @@ class TagAPI(APIView):
         :param request:
         :return:
         '''
-        tags = ArticleTags.objects.all()
+        tags = Tags.objects.all()
         return self.success(TagSerializer(tags, many=True).data)
+
+class CategoryAPI(APIView):
+    def get(self,request):
+        '''
+
+        :param request:
+        :return:
+        '''
+        category = Categorys.objects.all()
+        return self.success(CategorySerializer(category,many=True).data)
