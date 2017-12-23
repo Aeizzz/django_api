@@ -1,27 +1,13 @@
-from django.shortcuts import render
-from rest_framework.views import APIView
-from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework.renderers import JSONRenderer
-from .models import Article,Tags,Categorys
-from .serializers import ArticleSerializer,TagSerializer,CreateArticleSerializer,EditArticleSerializer,CategorySerializer,ArticleAdminSerializer
-from utils.api.api import APIView,validate_serializer
-from account.models import User
+from utils.api.api import APIView, validate_serializer
+from .models import Article, Tags, Categorys
+from .serializers import ArticleSerializer, TagSerializer, CreateArticleSerializer, EditArticleSerializer, \
+    CategorySerializer
 
 
-class JSONResponse(HttpResponse):
-
-    """docstring for JSONRenderer"""
-    '''
-    将HttpResponse对象相应的内容转化为json
-    '''
-
-    def __init__(self, data, **kwargs):
-        content = JSONRenderer().render(data)
-        kwargs['content_type'] = 'application/json;charset=utf-8'
-        super(JSONResponse, self).__init__(content, **kwargs)
-
-
+'''
+文章的增删改查完成
+'''
 class ArticleAPI(APIView):
     @validate_serializer(CreateArticleSerializer)
     def post(self,request):
@@ -41,7 +27,7 @@ class ArticleAPI(APIView):
             except Tags.DoesNotExist:
                 tag = Tags.objects.create(name=item)
             article.tags.add(tag)
-        return self.success(ArticleAdminSerializer(article,many=True).data)
+        return self.success()
 
     @csrf_exempt
     def get(self,request):
@@ -119,6 +105,10 @@ class ArticleAPI(APIView):
 
         article.delete()
         return self.success()
+
+'''
+只有获取所有的tag
+'''
 class TagAPI(APIView):
     @csrf_exempt
     def get(self, request):
@@ -130,6 +120,12 @@ class TagAPI(APIView):
         tags = Tags.objects.all()
         return self.success(TagSerializer(tags, many=True).data)
 
+
+
+'''
+分类的增加和获取
+暂未修改和删除
+'''
 class CategoryAPI(APIView):
     def get(self,request):
         '''
@@ -139,3 +135,14 @@ class CategoryAPI(APIView):
         '''
         category = Categorys.objects.all()
         return self.success(CategorySerializer(category,many=True).data)
+
+    def post(self,request):
+        categorys = request.POST.get('category')
+        try:
+            category = Categorys.objects.get(name=categorys)
+            return self.error('category is realy exist')
+        except Categorys.DoesNotExist:
+            category = Categorys.objects.create(categorys)
+            return self.success()
+
+

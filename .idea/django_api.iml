@@ -15,6 +15,7 @@
     <orderEntry type="jdk" jdkName="Python 3.6.3 (E:\python36\python.exe)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="OnlineJudge" />
+    <orderEntry type="module" module-name="OnlineJudge" />
   </component>
   <component name="TemplatesService">
     <option name="TEMPLATE_CONFIGURATION" value="Django" />

@@ -19,7 +19,7 @@ from account.serializers import UserSerializer
 class ArticleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Article
-        fields = ('title', 'body', 'category', 'tags','author')
+        fields = ('title', 'body', 'category','author')
 
 
 class TagSerializer(serializers.ModelSerializer):
