@@ -12,8 +12,8 @@
 
 from django.contrib import auth
 from utils.api.api import APIView, validate_serializer
-from .models import User
-from .serializers import UserLoginSerializer, UserSerializer,UserRegisterSerializer
+from .models import User,Link
+from .serializers import (UserLoginSerializer, UserSerializer,UserRegisterSerializer,CrateLinkSerializer,EditLinkSerializer,LinkBaseSerializer)
 
 
 
@@ -27,7 +27,6 @@ class UserRegisterAPI(APIView):
         return self.success('Success')
 
 
-# 登陆API(未完成)
 class UserLoginAPI(APIView):
     @validate_serializer(UserLoginSerializer)
     def post(self, request):
@@ -56,6 +55,41 @@ class UserListAPI(APIView):
             user_list = User.objects.all()
         return self.success(self.paginate_data(request,user_list,UserSerializer))
 
+
+
+class LinkAPI(APIView):
+    @validate_serializer(CrateLinkSerializer)
+    def post(self,request):
+        data = request.data
+        link = Link.objects.create(data)
+        return self.success()
+
+    def get(self,request):
+        links = Link.objects.all()
+        self.success(EditLinkSerializer(links,many=True).data)
+
+    @validate_serializer(EditLinkSerializer)
+    def put(self,request):
+        data = request.data
+        link_id = data.pop('id')
+        try:
+            link = Link.objects.get(id=link_id)
+        except Link.DoesNotExist:
+            return self.error('link Dose Not Exist')
+
+        for k,v in data.items():
+            setattr(link,k,v)
+        link.save()
+        return self.success()
+
+    def delete(self,request):
+        id = request.GET.get('id')
+        try:
+            link = Link.objects.get('id')
+        except Link.DoesNotExist:
+            return self.error('link Dose Not Exist')
+        link.delete()
+        return self.success()
 
 
 

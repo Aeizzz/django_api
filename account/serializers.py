@@ -13,7 +13,7 @@ __author__ = '7326'
 
 
 from rest_framework import serializers
-from .models import User
+from .models import User,Link
 
 class UserLoginSerializer(serializers.Serializer):
     username = serializers.CharField(max_length=20)
@@ -29,3 +29,16 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username','name')
+
+
+class LinkBaseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Link
+        fields = ('name','url')
+
+
+class CrateLinkSerializer(LinkBaseSerializer):
+    pass
+
+class EditLinkSerializer(LinkBaseSerializer):
+    id = serializers.IntegerField()

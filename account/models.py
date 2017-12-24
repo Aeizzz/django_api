@@ -21,3 +21,11 @@ class User(AbstractBaseUser):
 
     class Meta:
         db_table = 'user'
+
+
+class Link(models.Model):
+    name = models.CharField(max_length=64)
+    url = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'link'
