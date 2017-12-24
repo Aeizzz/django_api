@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../OnlineJudge/.idea/OnlineJudge.iml" filepath="$PROJECT_DIR$/../OnlineJudge/.idea/OnlineJudge.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../OnlineJudge/.idea/OnlineJudge.iml" filepath="$PROJECT_DIR$/../OnlineJudge/.idea/OnlineJudge.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/django_api.iml" filepath="$PROJECT_DIR$/.idea/django_api.iml" />
     </modules>
   </component>
